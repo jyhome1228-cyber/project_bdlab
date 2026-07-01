@@ -97,6 +97,10 @@ body {
   font-size: 14px;
 }
 
+.bd-header-nav a {
+  transition: color 0.2s ease;
+}
+
 .bd-header-nav a:hover {
   color: var(--bd-red);
 }
@@ -240,6 +244,7 @@ body {
 
 .bd-section-body {
   max-width: 720px;
+  margin-top: 42px;
 }
 
 .bd-section-body p {
@@ -251,6 +256,20 @@ body {
 
 .bd-section-body p + p {
   margin-top: 26px;
+}
+
+.bd-section-link {
+  margin-top: 36px;
+}
+
+.bd-section-link a {
+  font-size: 14px;
+  color: var(--bd-red);
+  font-weight: 500;
+}
+
+.bd-section-link a:hover {
+  color: var(--bd-black);
 }
 
 /* About */
@@ -608,6 +627,10 @@ body {
   .bd-section-title {
     font-size: 30px;
     line-height: 1.14;
+  }
+
+  .bd-section-body {
+    margin-top: 32px;
   }
 
   .bd-section-body p {
