@@ -1,367 +1,546 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+:root {
+  --bd-red: #f2180b;
+  --bd-black: #0b0b0b;
+  --bd-gray: #8a8a8a;
+  --bd-light: #f6f6f4;
+  --bd-line: #e5e5e5;
+  --bd-white: #ffffff;
+}
 
-  <title>BDLab | Branding Design Lab</title>
-  <meta name="description" content="BDLab은 브랜드의 지속가능한 정체성과 시각 시스템을 연구하는 브랜딩 디자인 연구소입니다." />
+* {
+  box-sizing: border-box;
+}
 
-  <link rel="stylesheet" href="./css/style.css" />
-</head>
+html {
+  scroll-behavior: smooth;
+}
 
-<body>
-  <div class="bdlab-site">
+body {
+  margin: 0;
+  background: var(--bd-white);
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--bd-black);
+  word-break: keep-all;
+  letter-spacing: -0.02em;
+}
 
-    <!-- Header -->
-    <header class="bd-header">
-      <a href="./index.html" class="bd-header-logo" aria-label="BDLab Home">
-        <img src="https://cdn.imweb.me/upload/S2023030963558ef55ba8e/ce293217f4453.png" alt="BDLab Logo" />
-      </a>
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
-      <nav class="bd-header-nav" aria-label="Main Navigation">
-        <a href="./index.html" class="is-active">Home</a>
-        <a href="./about.html">About</a>
-        <a href="./research.html">Research</a>
-        <a href="./portfolio.html">Portfolio</a>
-        <a href="./journal.html">Journal</a>
-        <a href="./contact.html">Contact</a>
-      </nav>
+button {
+  font-family: inherit;
+}
 
-      <div class="bd-header-right">
-        <span>Branding Design Lab</span>
-        <button class="bd-menu-button" type="button" aria-label="Menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
+/* ================================
+   Common
+================================ */
 
-    <main class="bd-page">
+.bd-eyebrow {
+  font-size: 13px;
+  color: var(--bd-red);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
 
-      <!-- Hero -->
-      <section class="bd-page-hero">
-        <div class="bd-page-visual">
-          <img src="https://cdn.imweb.me/upload/S2023030963558ef55ba8e/8f5c615f95ea2.png" alt="BDLab Main Visual" />
-        </div>
+.bd-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 150px;
+  height: 44px;
+  padding: 0 22px;
+  border: 1px solid var(--bd-black);
+  font-size: 14px;
+  transition: all 0.25s ease;
+}
 
-        <div class="bd-page-hero-copy">
-          <div class="bd-eyebrow">Branding Design Lab</div>
+.bd-button:hover {
+  background: var(--bd-black);
+  color: #fff;
+}
 
-          <h1 class="bd-page-title">
-            We research<br />
-            Brand Fundamentals.
-          </h1>
+.bd-button.red {
+  border-color: var(--bd-red);
+  background: var(--bd-red);
+  color: #fff;
+}
 
-          <p class="bd-page-desc">
-            BDLab은 브랜드의 지속가능한 정체성과 시각 시스템을 연구하는 브랜딩 디자인 연구소입니다.
-            브랜드를 로고나 이미지로 환원하지 않고, 제품과 서비스, 공간, 콘텐츠, 사용자 경험이 하나의 호흡으로 작동하는 시스템으로 바라봅니다.
-          </p>
+.bd-button.red:hover {
+  background: var(--bd-black);
+  border-color: var(--bd-black);
+}
 
-          <div style="display:flex; gap:12px; margin-top:40px; flex-wrap:wrap;">
-            <a href="./portfolio.html" class="bd-button red">View Portfolio</a>
-            <a href="./about.html" class="bd-button">About BDLab</a>
-          </div>
-        </div>
-      </section>
+/* Blank Image Box */
+.bd-blank-image {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.035) 25%, transparent 25%) -12px 0/24px 24px,
+    linear-gradient(225deg, rgba(0,0,0,0.035) 25%, transparent 25%) -12px 0/24px 24px,
+    linear-gradient(315deg, rgba(0,0,0,0.035) 25%, transparent 25%) 0 0/24px 24px,
+    linear-gradient(45deg, rgba(0,0,0,0.035) 25%, #f1f1ef 25%) 0 0/24px 24px;
+  border: 1px solid var(--bd-line);
+}
 
-      <!-- About Preview -->
-      <section class="bd-section">
-        <div style="display:grid; grid-template-columns:0.9fr 1.1fr; gap:80px; align-items:start;">
-          <div>
-            <div class="bd-eyebrow">01 / About Us</div>
+.bd-blank-image span {
+  position: absolute;
+  left: 22px;
+  bottom: 20px;
+  font-size: 11px;
+  color: #999;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
 
-            <h2 class="bd-section-title">
-              경계를 허물지 않고는,<br />
-              본질에 닿을 수 없습니다.
-            </h2>
-          </div>
+.bd-blank-image img,
+.bd-page-visual img,
+.home-side-image img,
+.home-portfolio-thumb img,
+.portfolio-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 
-          <div class="bd-section-text">
-            <p>
-              BDLab은 산업의 경계를 브랜드의 한계로 두지 않습니다.
-              외식, 뷰티, 패션, 라이프스타일은 본래 분리된 영역이 아니라,
-              하나의 브랜드 철학 안에서 자연스럽게 믹스 앤 매치될 수 있는 요소라고 봅니다.
-            </p>
+/* ================================
+   Header
+================================ */
 
-            <p>
-              음식 브랜드가 패션 아이템이 되고, 로컬푸드가 뷰티 콘텐츠와 만나는 일처럼,
-              새로운 조합이 자연스럽게 받아들여지도록 충분히 넓고 단단한 그릇으로 브랜드를 짓는 디자인 사고를 추구합니다.
-            </p>
+.bd-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--bd-line);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+}
 
-            <p style="margin-top:34px;">
-              <a href="./about.html" style="color:#f2180b; font-size:14px; font-weight:500;">Read About BDLab →</a>
-            </p>
-          </div>
-        </div>
-      </section>
+.bd-header-logo {
+  width: 240px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  border-right: 1px solid var(--bd-line);
+}
 
-      <!-- Philosophy -->
-      <section class="bd-section" style="background:#0b0b0b; color:#fff;">
-        <div class="bd-eyebrow">Brand Philosophy</div>
+.bd-header-logo img {
+  display: block;
+  width: auto;
+  height: 30px;
+  object-fit: contain;
+}
 
-        <h2 class="bd-section-title">
-          하나의 형태로 고정하지 않고,<br />
-          확장될 수 있는 여지를 설계합니다.
-        </h2>
+.bd-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 38px;
+  padding: 0 34px;
+  font-size: 14px;
+}
 
-        <div class="bd-section-text" style="margin-top:42px;">
-          <p style="color:#ccc;">
-            서로 다른 두 가지를 나란히 놓았을 때, 오히려 더 또렷해지는 매력이 있습니다.
-            BDLab은 예상 밖의 조합 속에서 찾아지는 균형의 감각이 브랜드를 더 생기 있게 만든다고 믿습니다.
-          </p>
-        </div>
-      </section>
+.bd-header-nav a {
+  transition: color 0.2s ease;
+}
 
-      <!-- Research Flow -->
-      <section class="bd-section light">
-        <div style="display:grid; grid-template-columns:0.9fr 1.1fr; gap:80px; align-items:end;">
-          <div>
-            <div class="bd-eyebrow">02 / Research Flow</div>
+.bd-header-nav a:hover,
+.bd-header-nav a.is-active {
+  color: var(--bd-red);
+}
 
-            <h2 class="bd-section-title">
-              From research<br />
-              to validation.
-            </h2>
-          </div>
+.bd-header-right {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding-right: 28px;
+  font-size: 14px;
+  color: var(--bd-gray);
+}
 
-          <div class="bd-section-text">
-            <p>
-              BDLab의 연구는 브랜드가 오래 지속될 수 있는 구조를 만드는 데 목적이 있습니다.
-              트렌드를 따라가는 일이 아니라, 브랜드를 표면이 아닌 본질의 층위에서 이해하는 일에서 시작합니다.
-            </p>
-          </div>
-        </div>
+.bd-menu-button {
+  width: 26px;
+  height: 18px;
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
 
-        <div style="display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid #0b0b0b; margin-top:64px;">
-          <article style="min-height:280px; padding:28px 24px; border-right:1px solid #e5e5e5; display:flex; flex-direction:column; justify-content:space-between;">
-            <span style="font-size:13px; color:#f2180b; font-weight:600;">01</span>
-            <h3 style="font-size:25px; line-height:1.18; font-weight:400; letter-spacing:-0.045em; margin:0;">Research</h3>
-            <p style="font-size:15px; line-height:1.72; color:#444; margin:0;">
-              표면을 걷어내고 브랜드가 무엇을 말하며, 어떤 태도로 존재하는지 정리합니다.
-            </p>
-          </article>
+.bd-menu-button span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--bd-black);
+  transition: all 0.2s ease;
+}
 
-          <article style="min-height:280px; padding:28px 24px; border-right:1px solid #e5e5e5; display:flex; flex-direction:column; justify-content:space-between;">
-            <span style="font-size:13px; color:#f2180b; font-weight:600;">02</span>
-            <h3 style="font-size:25px; line-height:1.18; font-weight:400; letter-spacing:-0.045em; margin:0;">Design</h3>
-            <p style="font-size:15px; line-height:1.72; color:#444; margin:0;">
-              브랜드의 본질을 로고, 컬러, 타이포그래피, 이미지 스타일 등 시각 언어로 구체화합니다.
-            </p>
-          </article>
+.bd-menu-button span:nth-child(1) {
+  top: 0;
+}
 
-          <article style="min-height:280px; padding:28px 24px; border-right:1px solid #e5e5e5; display:flex; flex-direction:column; justify-content:space-between;">
-            <span style="font-size:13px; color:#f2180b; font-weight:600;">03</span>
-            <h3 style="font-size:25px; line-height:1.18; font-weight:400; letter-spacing:-0.045em; margin:0;">Application</h3>
-            <p style="font-size:15px; line-height:1.72; color:#444; margin:0;">
-              패키지, 사인, 굿즈, 콘텐츠, 웹사이트 등 다양한 접점으로 브랜드 경험을 확장합니다.
-            </p>
-          </article>
+.bd-menu-button span:nth-child(2) {
+  top: 8px;
+}
 
-          <article style="min-height:280px; padding:28px 24px; display:flex; flex-direction:column; justify-content:space-between;">
-            <span style="font-size:13px; color:#f2180b; font-weight:600;">04</span>
-            <h3 style="font-size:25px; line-height:1.18; font-weight:400; letter-spacing:-0.045em; margin:0;">Validation</h3>
-            <p style="font-size:15px; line-height:1.72; color:#444; margin:0;">
-              실제 시장에서 브랜드 전략이 어떻게 작동하는지 추적하고 분석합니다.
-            </p>
-          </article>
-        </div>
-      </section>
+.bd-menu-button span:nth-child(3) {
+  bottom: 0;
+}
 
-      <!-- Glocal -->
-      <section class="bd-section">
-        <div style="display:grid; grid-template-columns:0.95fr 1.05fr; gap:80px; align-items:start;">
-          <div style="height:520px; overflow:hidden;">
-            <img src="https://cdn.imweb.me/upload/S2023030963558ef55ba8e/b96a84bcb753e.png" alt="BDLab Glocal Visual" style="width:100%; height:100%; object-fit:cover; display:block;" />
-          </div>
+.bd-menu-button.is-active span:nth-child(1) {
+  top: 8px;
+  transform: rotate(45deg);
+}
 
-          <div>
-            <div class="bd-eyebrow">03 / Glocal Direction</div>
+.bd-menu-button.is-active span:nth-child(2) {
+  opacity: 0;
+}
 
-            <h2 class="bd-section-title">
-              Korean lifestyle,<br />
-              global language.
-            </h2>
+.bd-menu-button.is-active span:nth-child(3) {
+  bottom: 9px;
+  transform: rotate(-45deg);
+}
 
-            <div class="bd-section-text" style="margin-top:42px;">
-              <p>
-                BDLab은 한국의 의식주 라이프스타일을 통합적인 시각으로 바라봅니다.
-                이너뷰티와 아우터뷰티, 로컬푸드, 생활문화가 하나의 브랜드 언어 안에서 자연스럽게 연결될 수 있도록 연구합니다.
-              </p>
+/* ================================
+   Page Basic
+================================ */
 
-              <p>
-                이는 글로컬 관점, 즉 한국적 고유성을 지키면서도 글로벌 시장에서 통용될 수 있는 브랜드 체계를 만드는 것을 핵심 방향으로 삼습니다.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+.bd-page {
+  min-height: 70vh;
+}
 
-      <!-- Portfolio Preview -->
-      <section class="bd-section light">
-        <div style="display:grid; grid-template-columns:0.9fr 1.1fr; gap:80px; align-items:end;">
-          <div>
-            <div class="bd-eyebrow">04 / Portfolio</div>
+.bd-page-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 72px);
+  border-bottom: 1px solid var(--bd-line);
+}
 
-            <h2 class="bd-section-title">
-              Brand projects<br />
-              for scale-up growth.
-            </h2>
-          </div>
+.bd-page-hero-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 72px 7vw;
+}
 
-          <div class="bd-section-text">
-            <p>
-              성장 단계의 브랜드가 시장에서 더 명확하게 인식될 수 있도록,
-              브랜드 정체성, 시각 시스템, 패키지, 웹사이트, 콘텐츠 구축 사례를 기록합니다.
-            </p>
-          </div>
-        </div>
+.bd-page-title {
+  font-size: clamp(38px, 3.8vw, 64px);
+  line-height: 1.08;
+  letter-spacing: -0.06em;
+  font-weight: 400;
+  margin: 0;
+}
 
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:56px;">
-          <a href="./portfolio.html" style="border:1px solid #e5e5e5; background:#fff;">
-            <div style="aspect-ratio:16/10; overflow:hidden; border-bottom:1px solid #e5e5e5;">
-              <img src="https://cdn.imweb.me/upload/S2023030963558ef55ba8e/a417179a62959.png" alt="Portfolio Preview 01" style="width:100%; height:100%; object-fit:cover; display:block;" />
-            </div>
-            <div style="padding:20px 22px;">
-              <h3 style="font-size:21px; line-height:1.25; font-weight:500; letter-spacing:-0.045em; margin:0 0 12px;">BDLab Application</h3>
-              <p style="font-size:14px; color:#555; margin:0;">Brand Application / 2026</p>
-            </div>
-          </a>
+.bd-page-desc {
+  max-width: 620px;
+  margin: 32px 0 0;
+  font-size: 17px;
+  line-height: 1.78;
+  color: #333;
+}
 
-          <a href="./portfolio.html" style="border:1px solid #e5e5e5; background:#fff;">
-            <div style="aspect-ratio:16/10; overflow:hidden; border-bottom:1px solid #e5e5e5;">
-              <img src="https://cdn.imweb.me/upload/S2023030963558ef55ba8e/1fbdf913843e9.png" alt="Portfolio Preview 02" style="width:100%; height:100%; object-fit:cover; display:block;" />
-            </div>
-            <div style="padding:20px 22px;">
-              <h3 style="font-size:21px; line-height:1.25; font-weight:500; letter-spacing:-0.045em; margin:0 0 12px;">BDLab Visual System</h3>
-              <p style="font-size:14px; color:#555; margin:0;">Visual System / 2026</p>
-            </div>
-          </a>
+.bd-page-visual {
+  min-height: calc(100vh - 72px);
+  overflow: hidden;
+}
 
-          <a href="./portfolio.html" style="border:1px solid #e5e5e5; background:#fff;">
-            <div style="aspect-ratio:16/10; overflow:hidden; border-bottom:1px solid #e5e5e5;">
-              <img src="https://cdn.imweb.me/upload/S2023030963558ef55ba8e/a33516acfedf2.png" alt="Portfolio Preview 03" style="width:100%; height:100%; object-fit:cover; display:block;" />
-            </div>
-            <div style="padding:20px 22px;">
-              <h3 style="font-size:21px; line-height:1.25; font-weight:500; letter-spacing:-0.045em; margin:0 0 12px;">BDLab Identity</h3>
-              <p style="font-size:14px; color:#555; margin:0;">Brand Identity / 2026</p>
-            </div>
-          </a>
-        </div>
+.bd-section {
+  padding: 96px 6vw;
+  border-bottom: 1px solid var(--bd-line);
+}
 
-        <p style="margin-top:34px;">
-          <a href="./portfolio.html" style="color:#f2180b; font-size:14px; font-weight:500;">View All Portfolio →</a>
-        </p>
-      </section>
+.bd-section.light {
+  background: var(--bd-light);
+}
 
-      <!-- Journal Preview -->
-      <section class="bd-section">
-        <div style="display:grid; grid-template-columns:0.9fr 1.1fr; gap:80px; align-items:end;">
-          <div>
-            <div class="bd-eyebrow">05 / Journal</div>
+.bd-section-title {
+  font-size: clamp(32px, 3.1vw, 52px);
+  line-height: 1.12;
+  letter-spacing: -0.055em;
+  font-weight: 400;
+  margin: 0;
+}
 
-            <h2 class="bd-section-title">
-              Journal for<br />
-              Brand Thinking.
-            </h2>
-          </div>
+.bd-section-text {
+  max-width: 760px;
+}
 
-          <div class="bd-section-text">
-            <p>
-              BDLab은 브랜드, 디자인, 지속가능성, 스케일업, 글로컬 전략에 대한 연구와 관점을 글로 기록합니다.
-              홈페이지에는 블로그형 글로, 인스타그램에는 간략한 카드형 콘텐츠로 확장합니다.
-            </p>
-          </div>
-        </div>
+.bd-section-text p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.82;
+  color: #333;
+}
 
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:56px;">
-          <a href="./journal.html" style="min-height:240px; padding:26px 24px; border:1px solid #e5e5e5; display:flex; flex-direction:column; justify-content:space-between;">
-            <h3 style="font-size:24px; line-height:1.34; letter-spacing:-0.045em; font-weight:400; margin:0;">브랜드는 만들 때보다 운영될 때 더 많이 무너진다</h3>
-            <div style="font-size:13px; color:#8a8a8a;">Journal / Brand System</div>
-          </a>
+.bd-section-text p + p {
+  margin-top: 26px;
+}
 
-          <a href="./journal.html" style="min-height:240px; padding:26px 24px; border:1px solid #e5e5e5; display:flex; flex-direction:column; justify-content:space-between;">
-            <h3 style="font-size:24px; line-height:1.34; letter-spacing:-0.045em; font-weight:400; margin:0;">좋은 로고보다 먼저 정리해야 할 것들</h3>
-            <div style="font-size:13px; color:#8a8a8a;">Journal / Identity</div>
-          </a>
+/* ================================
+   Portfolio Grid
+================================ */
 
-          <a href="./journal.html" style="min-height:240px; padding:26px 24px; border:1px solid #e5e5e5; display:flex; flex-direction:column; justify-content:space-between;">
-            <h3 style="font-size:24px; line-height:1.34; letter-spacing:-0.045em; font-weight:400; margin:0;">웹사이트는 브랜드가 어떤 구조로 작동하는지 보여준다</h3>
-            <div style="font-size:13px; color:#8a8a8a;">Journal / Web Identity</div>
-          </a>
-        </div>
+.portfolio-grid-wrap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 42px 24px;
+}
 
-        <p style="margin-top:34px;">
-          <a href="./journal.html" style="color:#f2180b; font-size:14px; font-weight:500;">Read Journal →</a>
-        </p>
-      </section>
+.portfolio-card-item {
+  display: block;
+  border: 1px solid var(--bd-line);
+  background: #fff;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
 
-      <!-- CTA -->
-      <section class="bd-section" style="background:#0b0b0b; color:#fff;">
-        <div style="display:grid; grid-template-columns:0.9fr 1.1fr; gap:80px; align-items:end;">
-          <div>
-            <div class="bd-eyebrow">06 / Collaboration</div>
+.portfolio-card-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.08);
+  border-color: #d8d8d8;
+}
 
-            <h2 class="bd-section-title">
-              지산학 협력 기반의<br />
-              브랜드 연구 구조.
-            </h2>
-          </div>
+.portfolio-img-box {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-bottom: 1px solid var(--bd-line);
+  background: #f4f4f2;
+}
 
-          <div class="bd-section-text">
-            <p style="color:#ccc;">
-              BDLab은 지자체, 산업, 학계가 함께 연결되는 지산학 협력 구조를 기반으로,
-              다양한 성장 단계의 기업이 시장에서 더 명확하게 인식되고 지속가능한 브랜드 구조를 갖출 수 있도록 실질적인 연구와 지원을 이어갑니다.
-            </p>
+.portfolio-card-body {
+  padding: 20px 22px 24px;
+}
 
-            <p style="margin-top:34px;">
-              <a href="./contact.html" class="bd-button red">Contact BDLab</a>
-            </p>
-          </div>
-        </div>
-      </section>
+.portfolio-card-body h3 {
+  margin: 0 0 18px;
+  font-size: 21px;
+  line-height: 1.25;
+  font-weight: 500;
+  letter-spacing: -0.045em;
+}
 
-    </main>
+.portfolio-card-body p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+}
 
-    <!-- Footer -->
-    <footer class="bd-footer">
-      <div class="bd-footer-top">
-        <div class="bd-footer-brand">
-          <strong>BDLab.</strong>
-          <p>Branding Design Lab</p>
-        </div>
+/* ================================
+   Footer
+================================ */
 
-        <div>
-          <div class="bd-footer-title">Menu</div>
-          <div class="bd-footer-links">
-            <a href="./index.html">Home</a>
-            <a href="./about.html">About</a>
-            <a href="./research.html">Research</a>
-            <a href="./portfolio.html">Portfolio</a>
-            <a href="./journal.html">Journal</a>
-            <a href="./contact.html">Contact</a>
-          </div>
-        </div>
+.bd-footer {
+  background: var(--bd-black);
+  color: #fff;
+  padding: 70px 6vw 40px;
+  border-top: 1px solid #222;
+}
 
-        <div>
-          <div class="bd-footer-title">Project</div>
-          <div class="bd-footer-links">
-            <a href="./contact.html">Project Request</a>
-            <a href="./portfolio.html">Portfolio</a>
-            <a href="./journal.html">Journal</a>
-          </div>
-        </div>
-      </div>
+.bd-footer-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 90px;
+}
 
-      <div class="bd-footer-bottom">
-        <div>© 2026 BDLab. Branding Design Lab. All Rights Reserved.</div>
-        <div>Sustainability for the Brand</div>
-      </div>
-    </footer>
+.bd-footer-brand strong {
+  display: block;
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  color: #fff;
+}
 
-  </div>
+.bd-footer-brand p {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: #777;
+}
 
-  <script src="./js/main.js"></script>
-</body>
-</html>
+.bd-footer-logo-box {
+  display: none;
+}
+
+.bd-footer-title {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 18px;
+}
+
+.bd-footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 15px;
+  color: #d8d8d8;
+}
+
+.bd-footer-links a:hover {
+  color: var(--bd-red);
+}
+
+.bd-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  padding-top: 34px;
+  border-top: 1px solid #222;
+  font-size: 12px;
+  color: #777;
+}
+
+/* ================================
+   Responsive
+================================ */
+
+@media (max-width: 1024px) {
+  .bd-header-nav {
+    display: none;
+  }
+
+  .bd-header-nav.is-open {
+    position: fixed;
+    top: 72px;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: 20px 28px;
+    background: #fff;
+    border-bottom: 1px solid var(--bd-line);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.08);
+  }
+
+  .bd-header-nav.is-open a {
+    width: 100%;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--bd-line);
+  }
+
+  .bd-page-hero,
+  .bd-section > div[style*="display:grid"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  .bd-page-visual {
+    min-height: 52vh;
+  }
+
+  .bd-section div[style*="grid-template-columns:repeat(4,1fr)"],
+  .bd-section div[style*="grid-template-columns: repeat(4,1fr)"],
+  .bd-section div[style*="grid-template-columns:repeat(3,1fr)"],
+  .bd-section div[style*="grid-template-columns: repeat(3,1fr)"],
+  .portfolio-grid-wrap {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .bd-footer-top {
+    grid-template-columns: 1fr;
+    gap: 42px;
+    margin-bottom: 60px;
+  }
+}
+
+@media (max-width: 640px) {
+  .bd-header {
+    height: 64px;
+  }
+
+  .bd-header-logo {
+    width: auto;
+    height: 64px;
+    padding: 0 20px;
+    border-right: 0;
+  }
+
+  .bd-header-logo img {
+    height: 26px;
+  }
+
+  .bd-header-right span {
+    display: none;
+  }
+
+  .bd-header-right {
+    padding-right: 20px;
+  }
+
+  .bd-header-nav.is-open {
+    top: 64px;
+  }
+
+  .bd-page-hero-copy {
+    padding: 58px 22px 68px;
+  }
+
+  .bd-page-title {
+    font-size: 34px;
+    line-height: 1.14;
+  }
+
+  .bd-page-desc {
+    font-size: 16px;
+    line-height: 1.72;
+  }
+
+  .bd-page-visual {
+    min-height: 42vh;
+  }
+
+  .bd-section {
+    padding: 70px 22px;
+  }
+
+  .bd-section-title {
+    font-size: 30px;
+    line-height: 1.16;
+  }
+
+  .bd-section-text p {
+    font-size: 16px;
+    line-height: 1.76;
+  }
+
+  .bd-section > div[style*="display:grid"],
+  .bd-section div[style*="grid-template-columns:repeat(4,1fr)"],
+  .bd-section div[style*="grid-template-columns: repeat(4,1fr)"],
+  .bd-section div[style*="grid-template-columns:repeat(3,1fr)"],
+  .bd-section div[style*="grid-template-columns: repeat(3,1fr)"],
+  .portfolio-grid-wrap {
+    grid-template-columns: 1fr !important;
+  }
+
+  .bd-section article[style*="border-right"] {
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--bd-line) !important;
+  }
+
+  .bd-button {
+    width: 100%;
+  }
+
+  .portfolio-card-body h3 {
+    font-size: 20px;
+  }
+
+  .bd-footer {
+    padding: 60px 22px 34px;
+  }
+
+  .bd-footer-bottom {
+    flex-direction: column;
+  }
+}
