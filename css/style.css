@@ -682,7 +682,7 @@ button {
     height: 19.2px;
   }
 
-  .bd-header-right span {
+  .bd-header-right > span {
     display: none;
   }
 
