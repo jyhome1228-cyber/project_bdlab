@@ -310,10 +310,56 @@ button {
 }
 
 .portfolio-img-box {
+  position: relative;
   aspect-ratio: 16 / 10;
   overflow: hidden;
   border-bottom: 1px solid var(--bd-line);
   background: #f4f4f2;
+}
+
+.portfolio-img-box .portfolio-img {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.45s ease, transform 0.65s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.portfolio-img--default {
+  z-index: 1;
+  opacity: 1;
+}
+
+.portfolio-img--hover {
+  z-index: 2;
+  opacity: 0;
+  transform: scale(1.025);
+}
+
+.portfolio-card-item:hover .portfolio-img--default,
+.portfolio-card-item:focus-visible .portfolio-img--default {
+  opacity: 0;
+}
+
+.portfolio-card-item:hover .portfolio-img--hover,
+.portfolio-card-item:focus-visible .portfolio-img--hover {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (hover: none) {
+  .portfolio-card-item:active .portfolio-img--default {
+    opacity: 0;
+  }
+
+  .portfolio-card-item:active .portfolio-img--hover {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-img-box .portfolio-img {
+    transition-duration: 0.01ms;
+  }
 }
 
 .portfolio-card-body {
