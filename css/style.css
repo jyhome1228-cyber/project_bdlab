@@ -557,13 +557,10 @@ button {
   margin-bottom: 90px;
 }
 
-.bd-footer-brand strong {
+.bd-footer-brand img {
   display: block;
-  font-size: 28px;
-  line-height: 1;
-  font-weight: 500;
-  letter-spacing: -0.055em;
-  color: #fff;
+  width: 155px;
+  height: auto;
 }
 
 .bd-footer-brand p {
