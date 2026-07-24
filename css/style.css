@@ -136,7 +136,7 @@ button {
 .bd-header-logo img {
   display: block;
   width: auto;
-  height: 44px;
+  height: 26.4px;
   object-fit: contain;
 }
 
@@ -559,7 +559,7 @@ button {
 
 .bd-footer-brand img {
   display: block;
-  width: 155px;
+  width: 93px;
   height: auto;
 }
 
@@ -679,7 +679,7 @@ button {
   }
 
   .bd-header-logo img {
-    height: 32px;
+    height: 19.2px;
   }
 
   .bd-header-right span {
