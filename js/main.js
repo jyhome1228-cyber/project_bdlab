@@ -19,7 +19,7 @@ if (!document.querySelector('link[data-bdlab-style="altos"]')) {
 if (!document.querySelector('link[data-bdlab-style="ui-refinement"]')) {
   const refinementStyle = document.createElement("link");
   refinementStyle.rel = "stylesheet";
-  refinementStyle.href = "./css/ui-refinement.css?v=20260821-3";
+  refinementStyle.href = "./css/ui-refinement.css?v=20260821-4";
   refinementStyle.dataset.bdlabStyle = "ui-refinement";
   document.head.appendChild(refinementStyle);
 }
@@ -27,9 +27,7 @@ if (!document.querySelector('link[data-bdlab-style="ui-refinement"]')) {
 const blackAccentStyle = document.createElement("style");
 blackAccentStyle.setAttribute("data-bdlab-accent", "black");
 blackAccentStyle.textContent = `
-  :root {
-    --bd-red: #0b0b0b !important;
-  }
+  :root { --bd-red: #0b0b0b !important; }
 
   [style*="color:#f2180b" i],
   [style*="color: #f2180b" i],
@@ -51,10 +49,10 @@ const menuButton = document.querySelector(".bd-menu-button");
 const headerNav = document.querySelector(".bd-header-nav");
 const headerRight = document.querySelector(".bd-header-right");
 
-/* Home remains accessible through the logo, so remove it from the main menu. */
+/* Home stays available through the logo. */
 headerNav?.querySelectorAll('a[href$="index.html"]').forEach((link) => link.remove());
 
-/* Client belongs in the right utility area as a CTA, not in the main menu. */
+/* Client lives in the right utility area. */
 headerNav?.querySelectorAll('a[href$="client.html"]').forEach((link) => link.remove());
 
 if (headerRight) {
@@ -127,9 +125,10 @@ function setEditorialImage(selector, src, alt) {
 }
 
 const currentPage = location.pathname.split("/").pop() || "index.html";
-const isPortfolioPage = currentPage === "portfolio.html" || /^project-[a-z0-9-]+\.html$/i.test(currentPage);
+const isProjectDetailPage = /^project-[a-z0-9-]+\.html$/i.test(currentPage);
+const isPortfolioOrProjectPage = currentPage === "portfolio.html" || isProjectDetailPage;
 
-if (!isPortfolioPage) {
+if (!isPortfolioOrProjectPage) {
   const pageImageMap = {
     "index.html": [
       [".bd-page-hero .bd-page-visual img", BDLAB_EDITORIAL_IMAGES[0], "BDLab Editorial Visual 01"],
@@ -156,7 +155,7 @@ if (!isPortfolioPage) {
   });
 }
 
-/* Keep the footer identity synchronized with the current header identity. */
+/* Keep footer identity synchronized with the current header identity. */
 const footerLogo = document.querySelector(".bd-footer-brand img");
 if (footerLogo) {
   footerLogo.src = "./assets/bdlab-logo.svg";
@@ -165,11 +164,11 @@ if (footerLogo) {
 }
 
 /* ================================
-   Client portfolio gate
+   Client project-detail gate
 ================================ */
 const CLIENT_SESSION_KEY = "bdlab_client_access_v2";
 const LEGACY_SESSION_KEY = "bdlab_client_access_v1";
-let pendingPortfolioTarget = "portfolio.html";
+let pendingProjectTarget = "portfolio.html";
 
 function readClientSession() {
   const keys = [CLIENT_SESSION_KEY, LEGACY_SESSION_KEY];
@@ -189,12 +188,13 @@ function hasActiveClientSession() {
   return Boolean(readClientSession());
 }
 
-function portfolioFileFromUrl(href) {
+/* Only individual project detail URLs are protected. portfolio.html itself is public. */
+function projectFileFromUrl(href) {
   try {
     const url = new URL(href, location.href);
     if (url.origin !== location.origin) return null;
     const file = url.pathname.split("/").pop() || "index.html";
-    if (file === "portfolio.html" || /^project-[a-z0-9-]+\.html$/i.test(file)) return file;
+    if (/^project-[a-z0-9-]+\.html$/i.test(file)) return file;
   } catch {
     return null;
   }
@@ -231,7 +231,7 @@ async function ensureClientDataApi() {
   return window.BDLabClientData;
 }
 
-function ensurePortfolioModal() {
+function ensureProjectModal() {
   let modal = document.querySelector("#portfolioClientModal");
   if (modal) return modal;
 
@@ -245,7 +245,7 @@ function ensurePortfolioModal() {
       <button class="client-gate-close" type="button" aria-label="닫기" data-client-modal-close>×</button>
       <p class="client-gate-kicker">Client Portfolio</p>
       <h2 id="clientGateTitle">포트폴리오 상세 열람은<br>클라이언트 등록 후 가능합니다.</h2>
-      <p class="client-gate-copy">등록된 클라이언트는 아이디와 비밀번호로 로그인해 BDLab의 포트폴리오를 자세히 확인할 수 있습니다.</p>
+      <p class="client-gate-copy">포트폴리오 목록은 자유롭게 볼 수 있으며, 개별 프로젝트 상세는 등록된 클라이언트만 열람할 수 있습니다.</p>
 
       <form id="quickClientLoginForm" class="client-gate-login">
         <label>
@@ -256,7 +256,7 @@ function ensurePortfolioModal() {
           <span>Password</span>
           <input name="password" type="password" autocomplete="current-password" required placeholder="비밀번호" />
         </label>
-        <button type="submit">로그인 후 포트폴리오 보기</button>
+        <button type="submit">로그인</button>
         <p class="client-gate-status" aria-live="polite"></p>
       </form>
 
@@ -268,11 +268,11 @@ function ensurePortfolioModal() {
   document.body.appendChild(modal);
 
   modal.querySelectorAll("[data-client-modal-close]").forEach((button) => {
-    button.addEventListener("click", () => closePortfolioModal());
+    button.addEventListener("click", () => closeProjectModal());
   });
 
   modal.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closePortfolioModal();
+    if (event.key === "Escape") closeProjectModal();
   });
 
   const loginForm = modal.querySelector("#quickClientLoginForm");
@@ -291,10 +291,10 @@ function ensurePortfolioModal() {
       if (!api?.loginClient) throw new Error("클라이언트 로그인 기능을 불러오지 못했습니다.");
       const client = await api.loginClient(formData.get("clientId") || "", formData.get("password") || "");
       api.grantAccess(client);
-      status.textContent = "로그인되었습니다. 포트폴리오로 이동합니다.";
+      status.textContent = "로그인되었습니다. 프로젝트로 이동합니다.";
       status.className = "client-gate-status is-success";
       setTimeout(() => {
-        location.href = pendingPortfolioTarget || "portfolio.html";
+        location.href = pendingProjectTarget || "portfolio.html";
       }, 300);
     } catch (error) {
       console.error(error);
@@ -307,9 +307,9 @@ function ensurePortfolioModal() {
   return modal;
 }
 
-function openPortfolioModal(target = "portfolio.html") {
-  pendingPortfolioTarget = target;
-  const modal = ensurePortfolioModal();
+function openProjectModal(target) {
+  pendingProjectTarget = target;
+  const modal = ensureProjectModal();
   const registerLink = modal.querySelector(".client-gate-register");
   if (registerLink) registerLink.href = `./client.html?next=${encodeURIComponent(target)}`;
   modal.hidden = false;
@@ -318,7 +318,7 @@ function openPortfolioModal(target = "portfolio.html") {
   setTimeout(() => modal.querySelector('input[name="clientId"]')?.focus(), 80);
 }
 
-function closePortfolioModal() {
+function closeProjectModal() {
   const modal = document.querySelector("#portfolioClientModal");
   if (!modal) return;
   modal.classList.remove("is-open");
@@ -326,20 +326,20 @@ function closePortfolioModal() {
   setTimeout(() => { modal.hidden = true; }, 180);
 }
 
-/* Clicking any Portfolio or project link asks for client login/registration first. */
+/* Portfolio list is public. Only individual project-detail links trigger login. */
 document.addEventListener("click", (event) => {
   const anchor = event.target.closest("a[href]");
   if (!anchor || anchor.hasAttribute("download") || anchor.target === "_blank") return;
 
-  const portfolioTarget = portfolioFileFromUrl(anchor.getAttribute("href"));
-  if (!portfolioTarget || hasActiveClientSession()) return;
+  const projectTarget = projectFileFromUrl(anchor.getAttribute("href"));
+  if (!projectTarget || hasActiveClientSession()) return;
 
   event.preventDefault();
   closeMobileMenu();
-  openPortfolioModal(portfolioTarget);
+  openProjectModal(projectTarget);
 }, true);
 
-/* Direct URL access still routes through client registration/login. */
-if (isPortfolioPage && !hasActiveClientSession()) {
-  location.replace(`./client.html?next=${encodeURIComponent(currentPage)}&reason=portfolio`);
+/* Direct project-detail URL access still requires client login/registration. */
+if (isProjectDetailPage && !hasActiveClientSession()) {
+  location.replace(`./client.html?next=${encodeURIComponent(currentPage)}&reason=project`);
 }
