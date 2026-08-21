@@ -16,6 +16,14 @@ if (!document.querySelector('link[data-bdlab-style="altos"]')) {
   document.head.appendChild(altosStyle);
 }
 
+if (!document.querySelector('link[data-bdlab-style="ui-refinement"]')) {
+  const refinementStyle = document.createElement("link");
+  refinementStyle.rel = "stylesheet";
+  refinementStyle.href = "./css/ui-refinement.css?v=20260821-1";
+  refinementStyle.dataset.bdlabStyle = "ui-refinement";
+  document.head.appendChild(refinementStyle);
+}
+
 const blackAccentStyle = document.createElement("style");
 blackAccentStyle.setAttribute("data-bdlab-accent", "black");
 blackAccentStyle.textContent = `
@@ -41,13 +49,30 @@ document.head.appendChild(blackAccentStyle);
 
 const menuButton = document.querySelector(".bd-menu-button");
 const headerNav = document.querySelector(".bd-header-nav");
+const headerRight = document.querySelector(".bd-header-right");
 
-if (headerNav && !headerNav.querySelector('a[href$="client.html"]')) {
-  const clientLink = document.createElement("a");
-  clientLink.href = "./client.html";
-  clientLink.textContent = "Client";
-  clientLink.className = "bd-client-nav-link";
-  headerNav.appendChild(clientLink);
+/* Home remains accessible through the logo, so remove it from the main menu. */
+headerNav?.querySelectorAll('a[href$="index.html"]').forEach((link) => link.remove());
+
+/* Client belongs in the right utility area as a CTA, not in the main menu. */
+headerNav?.querySelectorAll('a[href$="client.html"]').forEach((link) => link.remove());
+
+if (headerRight) {
+  Array.from(headerRight.children)
+    .filter((child) => child.tagName === "SPAN")
+    .forEach((label) => label.remove());
+
+  let clientCta = headerRight.querySelector(".bd-client-cta");
+  if (!clientCta) {
+    clientCta = document.createElement("a");
+    clientCta.href = "./client.html";
+    clientCta.textContent = "Client";
+    clientCta.className = "bd-client-cta";
+    headerRight.insertBefore(clientCta, menuButton || null);
+  }
+
+  const currentFile = location.pathname.split("/").pop() || "index.html";
+  if (currentFile === "client.html") clientCta.classList.add("is-active");
 }
 
 function closeMobileMenu() {
