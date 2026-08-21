@@ -134,7 +134,8 @@ if (!isPortfolioOrProjectPage) {
       [".bd-page-hero .bd-page-visual img", BDLAB_EDITORIAL_IMAGES[0], "BDLab Editorial Visual 01"],
       ['img[alt="BDLab Glocal Visual"]', BDLAB_EDITORIAL_IMAGES[1], "BDLab Editorial Visual 02"],
       ['img[alt="Portfolio Preview 01"]', BDLAB_EDITORIAL_IMAGES[8], "BDLab Portfolio Preview 01"],
-      ['img[alt="Portfolio Preview 02"]', BDLAB_EDITORIAL_IMAGES[9], "BDLab Portfolio Preview 02"]
+      ['img[alt="Portfolio Preview 02"]', BDLAB_EDITORIAL_IMAGES[9], "BDLab Portfolio Preview 02"],
+      ['img[alt="Portfolio Preview 03"]', BDLAB_EDITORIAL_IMAGES[10], "BDLab Portfolio Preview 03"]
     ],
     "about.html": [
       [".bd-page-hero .bd-page-visual img", BDLAB_EDITORIAL_IMAGES[2], "BDLab About Visual"],
