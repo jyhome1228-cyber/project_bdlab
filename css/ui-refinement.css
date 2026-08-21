@@ -66,7 +66,14 @@
   line-height: 1.05;
 }
 
-/* Simplified client registration */
+/* Footer uses the same current identity as the header. */
+.bd-footer-brand img.bd-footer-current-logo {
+  width: 142px;
+  height: auto;
+  filter: brightness(0) invert(1);
+}
+
+/* Client account page */
 .client-register-page {
   width: min(100%, 960px);
   min-height: calc(100vh - 78px);
@@ -94,16 +101,35 @@
   color: #444;
 }
 
+.client-login-panel,
 .client-register-panel {
   max-width: 760px;
-  margin: 78px auto 0;
+  margin-left: auto;
+  margin-right: auto;
   padding-top: 34px;
   border-top: 1px solid #111;
+}
+
+.client-login-panel {
+  margin-top: 72px;
+}
+
+.client-register-panel {
+  margin-top: 0;
 }
 
 .client-register-heading {
   margin-bottom: 38px;
   text-align: center;
+}
+
+.client-panel-kicker {
+  margin: 0 0 10px !important;
+  font-size: 10px !important;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #777 !important;
 }
 
 .client-register-heading h2 {
@@ -126,12 +152,240 @@
   margin-top: 4px;
 }
 
+.client-login-panel .access-submit,
 .client-register-panel .access-submit {
   margin-top: 8px;
 }
 
+.client-login-panel .access-status,
 .client-register-panel .access-status {
   text-align: center;
+}
+
+.client-page-divider {
+  position: relative;
+  max-width: 760px;
+  margin: 58px auto;
+  text-align: center;
+  color: #999;
+  font-size: 10px;
+  letter-spacing: .08em;
+}
+
+.client-page-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #ddd;
+}
+
+.client-page-divider span {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  padding: 0 14px;
+  background: #fff;
+}
+
+/* Portfolio registration/login modal */
+body.client-modal-open {
+  overflow: hidden;
+}
+
+.client-gate-modal[hidden] {
+  display: none !important;
+}
+
+.client-gate-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  transition: opacity .18s ease;
+}
+
+.client-gate-modal.is-open {
+  opacity: 1;
+}
+
+.client-gate-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.48);
+  backdrop-filter: blur(5px);
+}
+
+.client-gate-dialog {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 520px);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  padding: 42px 40px 38px;
+  background: #fff;
+  border: 1px solid #111;
+  box-shadow: 0 22px 70px rgba(0,0,0,.16);
+  transform: translateY(10px);
+  transition: transform .18s ease;
+}
+
+.client-gate-modal.is-open .client-gate-dialog {
+  transform: translateY(0);
+}
+
+.client-gate-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #111;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.client-gate-kicker {
+  margin: 0 0 18px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.client-gate-dialog h2 {
+  margin: 0;
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 1.08;
+  letter-spacing: -.055em;
+  font-weight: 400;
+}
+
+.client-gate-copy {
+  margin: 20px 0 30px;
+  font-size: 14px;
+  line-height: 1.72;
+  color: #555;
+}
+
+.client-gate-login {
+  display: grid;
+  gap: 14px;
+}
+
+.client-gate-login label {
+  display: grid;
+  gap: 7px;
+}
+
+.client-gate-login label > span {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.client-gate-login input {
+  width: 100%;
+  height: 46px;
+  padding: 0 12px;
+  border: 1px solid #ccc;
+  border-radius: 0;
+  background: #fff;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.client-gate-login input:focus {
+  border-color: #111;
+}
+
+.client-gate-login button,
+.client-gate-register {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  border: 1px solid #111;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.client-gate-login button {
+  margin-top: 4px;
+  background: #111;
+  color: #fff;
+}
+
+.client-gate-login button:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+
+.client-gate-status {
+  min-height: 18px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #666;
+  text-align: center;
+}
+
+.client-gate-status.is-error {
+  color: #a31e1e;
+}
+
+.client-gate-status.is-success {
+  color: #111;
+}
+
+.client-gate-divider {
+  position: relative;
+  margin: 24px 0;
+  text-align: center;
+  font-size: 9px;
+  letter-spacing: .08em;
+  color: #999;
+}
+
+.client-gate-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #ddd;
+}
+
+.client-gate-divider span {
+  position: relative;
+  z-index: 1;
+  padding: 0 10px;
+  background: #fff;
+}
+
+.client-gate-register {
+  background: #fff;
+  color: #111;
+}
+
+.client-gate-register:hover {
+  background: #111;
+  color: #fff;
 }
 
 @media (max-width: 980px) {
@@ -189,11 +443,32 @@
     padding: 70px 20px 90px;
   }
 
-  .client-register-panel {
+  .client-login-panel {
     margin-top: 58px;
+  }
+
+  .client-page-divider {
+    margin: 46px auto;
   }
 
   .client-register-heading {
     margin-bottom: 30px;
+  }
+
+  .client-gate-modal {
+    padding: 14px;
+  }
+
+  .client-gate-dialog {
+    padding: 36px 22px 28px;
+    max-height: calc(100vh - 28px);
+  }
+
+  .client-gate-dialog h2 {
+    font-size: 28px;
+  }
+
+  .bd-footer-brand img.bd-footer-current-logo {
+    width: 130px;
   }
 }
