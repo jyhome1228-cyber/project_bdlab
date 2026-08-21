@@ -8,6 +8,14 @@ if (!document.querySelector('link[rel="icon"]')) {
   document.head.appendChild(faviconLink);
 }
 
+if (!document.querySelector('link[data-bdlab-style="altos"]')) {
+  const altosStyle = document.createElement("link");
+  altosStyle.rel = "stylesheet";
+  altosStyle.href = "./css/altos.css?v=20260821-1";
+  altosStyle.dataset.bdlabStyle = "altos";
+  document.head.appendChild(altosStyle);
+}
+
 const blackAccentStyle = document.createElement("style");
 blackAccentStyle.setAttribute("data-bdlab-accent", "black");
 blackAccentStyle.textContent = `
@@ -34,18 +42,60 @@ document.head.appendChild(blackAccentStyle);
 const menuButton = document.querySelector(".bd-menu-button");
 const headerNav = document.querySelector(".bd-header-nav");
 
+if (headerNav && !headerNav.querySelector('a[href$="client.html"]')) {
+  const clientLink = document.createElement("a");
+  clientLink.href = "./client.html";
+  clientLink.textContent = "Client";
+  clientLink.className = "bd-client-nav-link";
+  headerNav.appendChild(clientLink);
+}
+
+function closeMobileMenu() {
+  headerNav?.classList.remove("is-open");
+  menuButton?.classList.remove("is-active");
+  menuButton?.setAttribute("aria-expanded", "false");
+}
+
 if (menuButton && headerNav) {
+  menuButton.setAttribute("aria-expanded", "false");
   menuButton.addEventListener("click", () => {
-    headerNav.classList.toggle("is-open");
-    menuButton.classList.toggle("is-active");
+    const willOpen = !headerNav.classList.contains("is-open");
+    headerNav.classList.toggle("is-open", willOpen);
+    menuButton.classList.toggle("is-active", willOpen);
+    menuButton.setAttribute("aria-expanded", String(willOpen));
   });
 
-  const navLinks = headerNav.querySelectorAll("a");
-
-  navLinks.forEach((link) => {
-    link.addEventListener("click", () => {
-      headerNav.classList.remove("is-open");
-      menuButton.classList.remove("is-active");
-    });
+  headerNav.addEventListener("click", (event) => {
+    if (event.target.closest("a")) closeMobileMenu();
   });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 860) closeMobileMenu();
+  });
+}
+
+/*
+ * Production portfolio gate.
+ * Keep disabled until the Firebase backend is connected, otherwise a static
+ * GitHub Pages deployment would lock clients out without a shared approval DB.
+ * When backend activation is complete, switch this to true and move protected
+ * portfolio assets behind authenticated/authorized storage for real security.
+ */
+const CLIENT_GATE_ENABLED = false;
+
+function hasActiveClientSession() {
+  try {
+    const session = JSON.parse(localStorage.getItem("bdlab_client_access_v1") || "null");
+    return Boolean(session && session.expiresAt && session.expiresAt > Date.now());
+  } catch {
+    return false;
+  }
+}
+
+if (CLIENT_GATE_ENABLED) {
+  const currentFile = location.pathname.split("/").pop() || "index.html";
+  const isProtectedPortfolio = currentFile === "portfolio.html" || /^project-[a-z0-9-]+\.html$/i.test(currentFile);
+  if (isProtectedPortfolio && !hasActiveClientSession()) {
+    location.replace(`./client.html?next=${encodeURIComponent(currentFile)}`);
+  }
 }
