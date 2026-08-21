@@ -55,6 +55,7 @@ async function submitRequest(payload) {
     email: payload.email.trim().toLowerCase(),
     phone: payload.phone.trim(),
     purpose: payload.purpose.trim(),
+    marketingConsent: Boolean(payload.marketingConsent),
     status: "pending"
   };
 
