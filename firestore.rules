@@ -7,18 +7,52 @@ service cloud.firestore {
         && request.auth.token.email == 'jyhome1228@gmail.com';
     }
 
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    match /bdlabClientProfiles/{uid} {
+      allow create: if isSignedIn()
+        && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.clientId is string
+        && request.resource.data.company is string
+        && request.resource.data.name is string
+        && request.resource.data.email is string;
+
+      allow get: if isAdmin() || (isSignedIn() && request.auth.uid == uid);
+      allow list: if isAdmin();
+
+      allow update: if isAdmin() || (
+        isSignedIn()
+        && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.clientId == resource.data.clientId
+      );
+
+      allow delete: if isAdmin();
+    }
+
     match /bdlabClientRequests/{requestId} {
-      allow create: if request.resource.data.status == 'pending'
+      allow create: if isSignedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.status == 'registered'
+        && request.resource.data.clientId is string
         && request.resource.data.company is string
         && request.resource.data.name is string
         && request.resource.data.email is string
         && request.resource.data.purpose is string;
-      allow read, update, delete: if isAdmin();
+
+      allow read: if isAdmin() || (
+        isSignedIn()
+        && resource.data.uid == request.auth.uid
+      );
+
+      allow update, delete: if isAdmin();
     }
 
+    /* Legacy approval-code collection retained for backwards compatibility. */
     match /bdlabAccess/{accessHash} {
-      // Access codes are SHA-256 document IDs. Clients can request one exact
-      // document by a code they already possess, but cannot enumerate the list.
       allow get: if true;
       allow list: if false;
       allow create, update, delete: if isAdmin();
