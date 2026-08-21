@@ -19,7 +19,7 @@ if (!document.querySelector('link[data-bdlab-style="altos"]')) {
 if (!document.querySelector('link[data-bdlab-style="ui-refinement"]')) {
   const refinementStyle = document.createElement("link");
   refinementStyle.rel = "stylesheet";
-  refinementStyle.href = "./css/ui-refinement.css?v=20260821-1";
+  refinementStyle.href = "./css/ui-refinement.css?v=20260821-3";
   refinementStyle.dataset.bdlabStyle = "ui-refinement";
   document.head.appendChild(refinementStyle);
 }
@@ -99,11 +99,9 @@ if (menuButton && headerNav) {
   });
 }
 
-/*
- * Editorial image refresh.
- * Portfolio and project-detail imagery is intentionally excluded.
- * Logos / favicon are also preserved.
- */
+/* ================================
+   Editorial image refresh
+================================ */
 const BDLAB_EDITORIAL_IMAGES = [
   "https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/927fb68a65baf.png",
   "https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/36b0ab8b2f076.png",
@@ -135,7 +133,9 @@ if (!isPortfolioPage) {
   const pageImageMap = {
     "index.html": [
       [".bd-page-hero .bd-page-visual img", BDLAB_EDITORIAL_IMAGES[0], "BDLab Editorial Visual 01"],
-      ['img[alt="BDLab Glocal Visual"]', BDLAB_EDITORIAL_IMAGES[1], "BDLab Editorial Visual 02"]
+      ['img[alt="BDLab Glocal Visual"]', BDLAB_EDITORIAL_IMAGES[1], "BDLab Editorial Visual 02"],
+      ['img[alt="Portfolio Preview 01"]', BDLAB_EDITORIAL_IMAGES[8], "BDLab Portfolio Preview 01"],
+      ['img[alt="Portfolio Preview 02"]', BDLAB_EDITORIAL_IMAGES[9], "BDLab Portfolio Preview 02"]
     ],
     "about.html": [
       [".bd-page-hero .bd-page-visual img", BDLAB_EDITORIAL_IMAGES[2], "BDLab About Visual"],
@@ -156,28 +156,190 @@ if (!isPortfolioPage) {
   });
 }
 
-/*
- * Production portfolio gate.
- * Keep disabled until the Firebase backend is connected, otherwise a static
- * GitHub Pages deployment would lock clients out without a shared approval DB.
- * When backend activation is complete, switch this to true and move protected
- * portfolio assets behind authenticated/authorized storage for real security.
- */
-const CLIENT_GATE_ENABLED = false;
-
-function hasActiveClientSession() {
-  try {
-    const session = JSON.parse(localStorage.getItem("bdlab_client_access_v1") || "null");
-    return Boolean(session && session.expiresAt && session.expiresAt > Date.now());
-  } catch {
-    return false;
-  }
+/* Keep the footer identity synchronized with the current header identity. */
+const footerLogo = document.querySelector(".bd-footer-brand img");
+if (footerLogo) {
+  footerLogo.src = "./assets/bdlab-logo.svg";
+  footerLogo.classList.add("bd-footer-current-logo");
+  footerLogo.alt = "BDLab Branding Design Lab";
 }
 
-if (CLIENT_GATE_ENABLED) {
-  const currentFile = location.pathname.split("/").pop() || "index.html";
-  const isProtectedPortfolio = currentFile === "portfolio.html" || /^project-[a-z0-9-]+\.html$/i.test(currentFile);
-  if (isProtectedPortfolio && !hasActiveClientSession()) {
-    location.replace(`./client.html?next=${encodeURIComponent(currentFile)}`);
+/* ================================
+   Client portfolio gate
+================================ */
+const CLIENT_SESSION_KEY = "bdlab_client_access_v2";
+const LEGACY_SESSION_KEY = "bdlab_client_access_v1";
+let pendingPortfolioTarget = "portfolio.html";
+
+function readClientSession() {
+  const keys = [CLIENT_SESSION_KEY, LEGACY_SESSION_KEY];
+  for (const key of keys) {
+    try {
+      const session = JSON.parse(localStorage.getItem(key) || "null");
+      if (session && session.expiresAt && session.expiresAt > Date.now()) return session;
+      if (session) localStorage.removeItem(key);
+    } catch {
+      localStorage.removeItem(key);
+    }
   }
+  return null;
+}
+
+function hasActiveClientSession() {
+  return Boolean(readClientSession());
+}
+
+function portfolioFileFromUrl(href) {
+  try {
+    const url = new URL(href, location.href);
+    if (url.origin !== location.origin) return null;
+    const file = url.pathname.split("/").pop() || "index.html";
+    if (file === "portfolio.html" || /^project-[a-z0-9-]+\.html$/i.test(file)) return file;
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+function loadScriptOnce(src, key) {
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector(`script[data-bdlab-loader="${key}"]`);
+    if (existing) {
+      if (existing.dataset.loaded === "true") resolve();
+      else existing.addEventListener("load", resolve, { once: true });
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = src;
+    script.dataset.bdlabLoader = key;
+    script.addEventListener("load", () => {
+      script.dataset.loaded = "true";
+      resolve();
+    }, { once: true });
+    script.addEventListener("error", reject, { once: true });
+    document.head.appendChild(script);
+  });
+}
+
+async function ensureClientDataApi() {
+  if (window.BDLabClientData) return window.BDLabClientData;
+  await loadScriptOnce("./js/firebase-config.js", "firebase-config");
+  if (!window.BDLabClientData) {
+    await loadScriptOnce("./js/client-data.js", "client-data");
+  }
+  return window.BDLabClientData;
+}
+
+function ensurePortfolioModal() {
+  let modal = document.querySelector("#portfolioClientModal");
+  if (modal) return modal;
+
+  modal = document.createElement("div");
+  modal.id = "portfolioClientModal";
+  modal.className = "client-gate-modal";
+  modal.hidden = true;
+  modal.innerHTML = `
+    <div class="client-gate-backdrop" data-client-modal-close></div>
+    <section class="client-gate-dialog" role="dialog" aria-modal="true" aria-labelledby="clientGateTitle">
+      <button class="client-gate-close" type="button" aria-label="닫기" data-client-modal-close>×</button>
+      <p class="client-gate-kicker">Client Portfolio</p>
+      <h2 id="clientGateTitle">포트폴리오 상세 열람은<br>클라이언트 등록 후 가능합니다.</h2>
+      <p class="client-gate-copy">등록된 클라이언트는 아이디와 비밀번호로 로그인해 BDLab의 포트폴리오를 자세히 확인할 수 있습니다.</p>
+
+      <form id="quickClientLoginForm" class="client-gate-login">
+        <label>
+          <span>Client ID</span>
+          <input name="clientId" autocomplete="username" required placeholder="클라이언트 아이디" />
+        </label>
+        <label>
+          <span>Password</span>
+          <input name="password" type="password" autocomplete="current-password" required placeholder="비밀번호" />
+        </label>
+        <button type="submit">로그인 후 포트폴리오 보기</button>
+        <p class="client-gate-status" aria-live="polite"></p>
+      </form>
+
+      <div class="client-gate-divider"><span>OR</span></div>
+      <a class="client-gate-register" href="./client.html">클라이언트 등록하기</a>
+    </section>
+  `;
+
+  document.body.appendChild(modal);
+
+  modal.querySelectorAll("[data-client-modal-close]").forEach((button) => {
+    button.addEventListener("click", () => closePortfolioModal());
+  });
+
+  modal.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closePortfolioModal();
+  });
+
+  const loginForm = modal.querySelector("#quickClientLoginForm");
+  loginForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const button = loginForm.querySelector("button[type='submit']");
+    const status = loginForm.querySelector(".client-gate-status");
+    const formData = new FormData(loginForm);
+
+    button.disabled = true;
+    status.textContent = "로그인 정보를 확인하고 있습니다.";
+    status.className = "client-gate-status";
+
+    try {
+      const api = await ensureClientDataApi();
+      if (!api?.loginClient) throw new Error("클라이언트 로그인 기능을 불러오지 못했습니다.");
+      const client = await api.loginClient(formData.get("clientId") || "", formData.get("password") || "");
+      api.grantAccess(client);
+      status.textContent = "로그인되었습니다. 포트폴리오로 이동합니다.";
+      status.className = "client-gate-status is-success";
+      setTimeout(() => {
+        location.href = pendingPortfolioTarget || "portfolio.html";
+      }, 300);
+    } catch (error) {
+      console.error(error);
+      status.textContent = error?.message || "아이디 또는 비밀번호를 확인해주세요.";
+      status.className = "client-gate-status is-error";
+      button.disabled = false;
+    }
+  });
+
+  return modal;
+}
+
+function openPortfolioModal(target = "portfolio.html") {
+  pendingPortfolioTarget = target;
+  const modal = ensurePortfolioModal();
+  const registerLink = modal.querySelector(".client-gate-register");
+  if (registerLink) registerLink.href = `./client.html?next=${encodeURIComponent(target)}`;
+  modal.hidden = false;
+  document.body.classList.add("client-modal-open");
+  requestAnimationFrame(() => modal.classList.add("is-open"));
+  setTimeout(() => modal.querySelector('input[name="clientId"]')?.focus(), 80);
+}
+
+function closePortfolioModal() {
+  const modal = document.querySelector("#portfolioClientModal");
+  if (!modal) return;
+  modal.classList.remove("is-open");
+  document.body.classList.remove("client-modal-open");
+  setTimeout(() => { modal.hidden = true; }, 180);
+}
+
+/* Clicking any Portfolio or project link asks for client login/registration first. */
+document.addEventListener("click", (event) => {
+  const anchor = event.target.closest("a[href]");
+  if (!anchor || anchor.hasAttribute("download") || anchor.target === "_blank") return;
+
+  const portfolioTarget = portfolioFileFromUrl(anchor.getAttribute("href"));
+  if (!portfolioTarget || hasActiveClientSession()) return;
+
+  event.preventDefault();
+  closeMobileMenu();
+  openPortfolioModal(portfolioTarget);
+}, true);
+
+/* Direct URL access still routes through client registration/login. */
+if (isPortfolioPage && !hasActiveClientSession()) {
+  location.replace(`./client.html?next=${encodeURIComponent(currentPage)}&reason=portfolio`);
 }
