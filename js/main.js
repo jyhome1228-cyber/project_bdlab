@@ -1,3 +1,13 @@
+const faviconUrl = "https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/e3736b2d58706.png";
+
+if (!document.querySelector('link[rel="icon"]')) {
+  const faviconLink = document.createElement("link");
+  faviconLink.rel = "icon";
+  faviconLink.type = "image/png";
+  faviconLink.href = faviconUrl;
+  document.head.appendChild(faviconLink);
+}
+
 const blackAccentStyle = document.createElement("style");
 blackAccentStyle.setAttribute("data-bdlab-accent", "black");
 blackAccentStyle.textContent = `
