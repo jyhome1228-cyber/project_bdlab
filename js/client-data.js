@@ -1,6 +1,8 @@
 const LOCAL_REQUESTS_KEY = "bdlab_client_requests_v1";
+const LOCAL_ACCOUNTS_KEY = "bdlab_client_accounts_v2";
 const LOCAL_ADMIN_PIN_KEY = "bdlab_admin_pin_hash_v1";
-const ACCESS_SESSION_KEY = "bdlab_client_access_v1";
+const ACCESS_SESSION_KEY = "bdlab_client_access_v2";
+const LEGACY_ACCESS_SESSION_KEY = "bdlab_client_access_v1";
 
 function readLocalRequests() {
   try {
@@ -14,16 +16,57 @@ function writeLocalRequests(items) {
   localStorage.setItem(LOCAL_REQUESTS_KEY, JSON.stringify(items));
 }
 
+function readLocalAccounts() {
+  try {
+    return JSON.parse(localStorage.getItem(LOCAL_ACCOUNTS_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function writeLocalAccounts(items) {
+  localStorage.setItem(LOCAL_ACCOUNTS_KEY, JSON.stringify(items));
+}
+
 function randomCode() {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   const block = () => Array.from({ length: 4 }, () => alphabet[Math.floor(Math.random() * alphabet.length)]).join("");
   return `BDL-${block()}-${block()}`;
 }
 
-async function sha256(value) {
-  const bytes = new TextEncoder().encode(String(value).trim().toUpperCase());
+async function digestSha256(value) {
+  const bytes = new TextEncoder().encode(String(value));
   const digest = await crypto.subtle.digest("SHA-256", bytes);
   return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function sha256(value) {
+  return digestSha256(String(value).trim().toUpperCase());
+}
+
+async function sha256Exact(value) {
+  return digestSha256(String(value));
+}
+
+function normalizeClientId(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function validateClientId(value) {
+  const normalized = normalizeClientId(value);
+  if (normalized.length < 4 || normalized.length > 30) {
+    throw new Error("클라이언트 아이디는 4~30자로 입력해주세요.");
+  }
+  if (!/^[a-z0-9._-]+$/.test(normalized)) {
+    throw new Error("클라이언트 아이디는 영문, 숫자, 점(.), 밑줄(_), 하이픈(-)만 사용할 수 있습니다.");
+  }
+  return normalized;
+}
+
+function validatePassword(value) {
+  const password = String(value || "");
+  if (password.length < 8) throw new Error("비밀번호는 8자 이상으로 설정해주세요.");
+  return password;
 }
 
 const firebaseConfig = window.BDLAB_FIREBASE_CONFIG;
@@ -34,13 +77,13 @@ async function getFirebase() {
   if (!hasFirebaseConfig) return null;
   if (firebaseApi) return firebaseApi;
 
-  const [{ initializeApp }, authModule, storeModule] = await Promise.all([
+  const [{ initializeApp, getApps, getApp }, authModule, storeModule] = await Promise.all([
     import("https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js"),
     import("https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js"),
     import("https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js")
   ]);
 
-  const app = initializeApp(firebaseConfig);
+  const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
   const auth = authModule.getAuth(app);
   const db = storeModule.getFirestore(app);
 
@@ -48,13 +91,139 @@ async function getFirebase() {
   return firebaseApi;
 }
 
+async function clientAuthEmail(clientId) {
+  const hash = await sha256Exact(normalizeClientId(clientId));
+  return `bdlab-${hash.slice(0, 32)}@client.bdlab.kr`;
+}
+
+function publicClientProfile(record) {
+  return {
+    id: record.id || record.uid || record.clientId || "",
+    uid: record.uid || "",
+    clientId: record.clientId || "",
+    company: record.company || "",
+    name: record.name || "",
+    email: record.email || "",
+    phone: record.phone || "",
+    purpose: record.purpose || "",
+    marketingConsent: Boolean(record.marketingConsent)
+  };
+}
+
+async function registerClient(payload) {
+  const clientId = validateClientId(payload.clientId);
+  const password = validatePassword(payload.password);
+  const record = {
+    clientId,
+    company: String(payload.company || "").trim(),
+    name: String(payload.name || "").trim(),
+    email: String(payload.email || "").trim().toLowerCase(),
+    phone: String(payload.phone || "").trim(),
+    purpose: String(payload.purpose || "").trim(),
+    marketingConsent: Boolean(payload.marketingConsent),
+    status: "registered"
+  };
+
+  const fb = await getFirebase();
+  if (fb) {
+    const authEmail = await clientAuthEmail(clientId);
+    try {
+      const credential = await fb.authModule.createUserWithEmailAndPassword(fb.auth, authEmail, password);
+      const uid = credential.user.uid;
+      const { doc, setDoc, addDoc, collection, serverTimestamp } = fb.storeModule;
+
+      await setDoc(doc(fb.db, "bdlabClientProfiles", uid), {
+        ...record,
+        uid,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+
+      await addDoc(collection(fb.db, "bdlabClientRequests"), {
+        ...record,
+        uid,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+
+      return publicClientProfile({ ...record, uid, id: uid });
+    } catch (error) {
+      if (error?.code === "auth/email-already-in-use") {
+        throw new Error("이미 사용 중인 클라이언트 아이디입니다.");
+      }
+      if (error?.code === "auth/operation-not-allowed") {
+        throw new Error("클라이언트 계정 기능이 아직 활성화되지 않았습니다. 관리자에게 문의해주세요.");
+      }
+      throw error;
+    }
+  }
+
+  const accounts = readLocalAccounts();
+  if (accounts.some((account) => account.clientId === clientId)) {
+    throw new Error("이미 사용 중인 클라이언트 아이디입니다.");
+  }
+
+  const passwordHash = await sha256Exact(password);
+  const localRecord = {
+    id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
+    ...record,
+    passwordHash,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  accounts.unshift(localRecord);
+  writeLocalAccounts(accounts);
+
+  const requests = readLocalRequests();
+  requests.unshift({
+    id: localRecord.id,
+    ...record,
+    createdAt: localRecord.createdAt,
+    updatedAt: localRecord.updatedAt
+  });
+  writeLocalRequests(requests);
+
+  return publicClientProfile(localRecord);
+}
+
+async function loginClient(clientIdValue, passwordValue) {
+  const clientId = validateClientId(clientIdValue);
+  const password = validatePassword(passwordValue);
+  const fb = await getFirebase();
+
+  if (fb) {
+    const authEmail = await clientAuthEmail(clientId);
+    try {
+      const credential = await fb.authModule.signInWithEmailAndPassword(fb.auth, authEmail, password);
+      const { doc, getDoc } = fb.storeModule;
+      const snap = await getDoc(doc(fb.db, "bdlabClientProfiles", credential.user.uid));
+      if (!snap.exists()) throw new Error("클라이언트 등록 정보를 찾을 수 없습니다.");
+      return publicClientProfile({ id: credential.user.uid, ...snap.data() });
+    } catch (error) {
+      if (["auth/invalid-credential", "auth/user-not-found", "auth/wrong-password", "auth/invalid-login-credentials"].includes(error?.code)) {
+        throw new Error("클라이언트 아이디 또는 비밀번호를 확인해주세요.");
+      }
+      throw error;
+    }
+  }
+
+  const account = readLocalAccounts().find((item) => item.clientId === clientId);
+  if (!account) throw new Error("클라이언트 아이디 또는 비밀번호를 확인해주세요.");
+  const passwordHash = await sha256Exact(password);
+  if (account.passwordHash !== passwordHash) {
+    throw new Error("클라이언트 아이디 또는 비밀번호를 확인해주세요.");
+  }
+  return publicClientProfile(account);
+}
+
+/* Legacy request API retained for the existing admin page. */
 async function submitRequest(payload) {
   const record = {
-    company: payload.company.trim(),
-    name: payload.name.trim(),
-    email: payload.email.trim().toLowerCase(),
-    phone: payload.phone.trim(),
-    purpose: payload.purpose.trim(),
+    company: String(payload.company || "").trim(),
+    name: String(payload.name || "").trim(),
+    email: String(payload.email || "").trim().toLowerCase(),
+    phone: String(payload.phone || "").trim(),
+    purpose: String(payload.purpose || "").trim(),
     marketingConsent: Boolean(payload.marketingConsent),
     status: "pending"
   };
@@ -176,26 +345,39 @@ async function validateCode(code) {
 
 function grantAccess(client) {
   const session = {
-    clientId: client.clientId || client.id || "",
+    id: client.id || client.uid || "",
+    uid: client.uid || "",
+    clientId: client.clientId || "",
     company: client.company || "",
     email: client.email || "",
-    expiresAt: Date.now() + 12 * 60 * 60 * 1000
+    expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000
   };
   localStorage.setItem(ACCESS_SESSION_KEY, JSON.stringify(session));
+  localStorage.removeItem(LEGACY_ACCESS_SESSION_KEY);
   return session;
 }
 
-function hasActiveAccess() {
+function getClientSession() {
   try {
     const session = JSON.parse(localStorage.getItem(ACCESS_SESSION_KEY) || "null");
     if (!session || !session.expiresAt || session.expiresAt < Date.now()) {
       localStorage.removeItem(ACCESS_SESSION_KEY);
-      return false;
+      return null;
     }
-    return true;
+    return session;
   } catch {
-    return false;
+    return null;
   }
+}
+
+function hasActiveAccess() {
+  return Boolean(getClientSession());
+}
+
+async function logoutClient() {
+  localStorage.removeItem(ACCESS_SESSION_KEY);
+  const fb = await getFirebase();
+  if (fb?.auth?.currentUser) await fb.authModule.signOut(fb.auth);
 }
 
 async function adminSignIn(email, password) {
@@ -223,6 +405,10 @@ async function getAdminUser() {
 
 window.BDLabClientData = {
   mode: hasFirebaseConfig ? "firebase" : "local",
+  registerClient,
+  loginClient,
+  logoutClient,
+  getClientSession,
   submitRequest,
   listRequests,
   approveRequest,
