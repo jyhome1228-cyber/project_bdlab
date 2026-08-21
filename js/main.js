@@ -100,6 +100,63 @@ if (menuButton && headerNav) {
 }
 
 /*
+ * Editorial image refresh.
+ * Portfolio and project-detail imagery is intentionally excluded.
+ * Logos / favicon are also preserved.
+ */
+const BDLAB_EDITORIAL_IMAGES = [
+  "https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/927fb68a65baf.png",
+  "https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/36b0ab8b2f076.png",
+  "https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/8a53a0f084c02.png",
+  "https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/0423129b134a8.png",
+  "https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/e3d9d73b68aab.png",
+  "https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/45603bc5f2ff4.png",
+  "https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/7a33df2ffe5fe.png",
+  "https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/2ece43d17d334.png",
+  "https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/efa3168c99c98.png",
+  "https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/d93a1c79c10ca.png",
+  "https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/59191f44392aa.png",
+  "https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/af2bb8af0e691.jpeg"
+];
+
+function setEditorialImage(selector, src, alt) {
+  const image = document.querySelector(selector);
+  if (!image) return;
+  image.src = src;
+  image.removeAttribute("srcset");
+  image.removeAttribute("sizes");
+  if (alt) image.alt = alt;
+}
+
+const currentPage = location.pathname.split("/").pop() || "index.html";
+const isPortfolioPage = currentPage === "portfolio.html" || /^project-[a-z0-9-]+\.html$/i.test(currentPage);
+
+if (!isPortfolioPage) {
+  const pageImageMap = {
+    "index.html": [
+      [".bd-page-hero .bd-page-visual img", BDLAB_EDITORIAL_IMAGES[0], "BDLab Editorial Visual 01"],
+      ['img[alt="BDLab Glocal Visual"]', BDLAB_EDITORIAL_IMAGES[1], "BDLab Editorial Visual 02"]
+    ],
+    "about.html": [
+      [".bd-page-hero .bd-page-visual img", BDLAB_EDITORIAL_IMAGES[2], "BDLab About Visual"],
+      ['img[alt="BDLab Brand System"]', BDLAB_EDITORIAL_IMAGES[3], "BDLab Brand System Visual"],
+      ['img[alt="BDLab Identity Application"]', BDLAB_EDITORIAL_IMAGES[4], "BDLab Identity Application Visual"]
+    ],
+    "research.html": [
+      [".bd-page-hero .bd-page-visual img", BDLAB_EDITORIAL_IMAGES[5], "BDLab Research Visual"],
+      ['img[alt="BDLab Design Research Visual"]', BDLAB_EDITORIAL_IMAGES[6], "BDLab Design Research Visual"]
+    ],
+    "contact.html": [
+      [".bd-page-hero .bd-page-visual img", BDLAB_EDITORIAL_IMAGES[7], "BDLab Contact Visual"]
+    ]
+  };
+
+  (pageImageMap[currentPage] || []).forEach(([selector, src, alt]) => {
+    setEditorialImage(selector, src, alt);
+  });
+}
+
+/*
  * Production portfolio gate.
  * Keep disabled until the Firebase backend is connected, otherwise a static
  * GitHub Pages deployment would lock clients out without a shared approval DB.
