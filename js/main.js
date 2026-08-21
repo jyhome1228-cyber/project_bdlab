@@ -1,3 +1,26 @@
+const blackAccentStyle = document.createElement("style");
+blackAccentStyle.setAttribute("data-bdlab-accent", "black");
+blackAccentStyle.textContent = `
+  :root {
+    --bd-red: #0b0b0b !important;
+  }
+
+  [style*="color:#f2180b" i],
+  [style*="color: #f2180b" i],
+  [style*="color:#ff0000" i],
+  [style*="color: #ff0000" i],
+  [style*="color:red" i],
+  [style*="color: red" i] {
+    color: #0b0b0b !important;
+  }
+
+  .bd-button.red {
+    background: #0b0b0b !important;
+    border-color: #0b0b0b !important;
+  }
+`;
+document.head.appendChild(blackAccentStyle);
+
 const menuButton = document.querySelector(".bd-menu-button");
 const headerNav = document.querySelector(".bd-header-nav");
 
