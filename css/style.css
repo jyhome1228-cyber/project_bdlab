@@ -775,3 +775,17 @@ button {
     flex-direction: column;
   }
 }
+
+/* Portfolio thumbnail blackout */
+.portfolio-img-box {
+  background: #000;
+}
+
+.portfolio-img-box .portfolio-img,
+.portfolio-card-item:hover .portfolio-img,
+.portfolio-card-item:focus-visible .portfolio-img,
+.portfolio-card-item:active .portfolio-img {
+  opacity: 0 !important;
+  visibility: hidden;
+  transform: none !important;
+}
