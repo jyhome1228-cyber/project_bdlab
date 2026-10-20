@@ -8,6 +8,45 @@
   <meta name="description" content="BDLab의 포트폴리오는 스케일업 프로젝트 기반 브랜드 구축 사례를 기록합니다." />
 
   <link rel="stylesheet" href="./css/style.css" />
+
+  <style>
+    /* Text-only portfolio cover: no image assets or hover image swaps */
+    .portfolio-grid-wrap .portfolio-title-cover {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: #000 !important;
+      padding: 32px 24px;
+      box-sizing: border-box;
+    }
+    .portfolio-title-cover__inner { position: relative; z-index: 3; max-width: 100%; }
+    .portfolio-title-cover__name {
+      display: block;
+      color: #fff;
+      font-size: clamp(20px, 2vw, 30px);
+      line-height: 1.3;
+      letter-spacing: -0.045em;
+      font-weight: 600;
+      overflow-wrap: break-word;
+      word-break: keep-all;
+    }
+    .portfolio-title-cover__desc {
+      display: block;
+      margin-top: 13px;
+      color: #a8a8a8;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.55;
+      letter-spacing: -0.015em;
+      word-break: keep-all;
+    }
+    @media (max-width: 767px) {
+      .portfolio-grid-wrap .portfolio-title-cover { padding: 26px 18px; }
+      .portfolio-title-cover__name { font-size: clamp(22px, 6vw, 29px); }
+      .portfolio-title-cover__desc { font-size: 12px; margin-top: 10px; }
+    }
+  </style>
 </head>
 
 <body>
@@ -67,7 +106,12 @@
         <div class="portfolio-grid-wrap">
 
           <a href="./project-cafe-dev.html" class="portfolio-card-item">
-            <div class="portfolio-img-box" style="background:#000000;" aria-hidden="true"></div>
+            <div class="portfolio-img-box portfolio-title-cover" style="background:#000000;">
+              <div class="portfolio-title-cover__inner">
+                <strong class="portfolio-title-cover__name">Cafe DEV</strong>
+                <span class="portfolio-title-cover__desc">커피 브랜드의 시각 정체성</span>
+              </div>
+            </div>
             <div class="portfolio-card-body">
               <h3>Cafe DEV</h3>
               <p>Brand Identity / F&B</p>
@@ -75,7 +119,12 @@
           </a>
 
           <a href="./project-muscovy-duvet.html" class="portfolio-card-item">
-            <div class="portfolio-img-box" style="background:#000000;" aria-hidden="true"></div>
+            <div class="portfolio-img-box portfolio-title-cover" style="background:#000000;">
+              <div class="portfolio-title-cover__inner">
+                <strong class="portfolio-title-cover__name">MUSCOVY DÜVET</strong>
+                <span class="portfolio-title-cover__desc">라이프스타일 브랜드 아이덴티티</span>
+              </div>
+            </div>
             <div class="portfolio-card-body">
               <h3>MUSCOVY DÜVET</h3>
               <p>Brand Identity / Lifestyle</p>
@@ -83,7 +132,12 @@
           </a>
 
           <a href="./project-medisketch.html" class="portfolio-card-item">
-            <div class="portfolio-img-box" style="background:#000000;" aria-hidden="true"></div>
+            <div class="portfolio-img-box portfolio-title-cover" style="background:#000000;">
+              <div class="portfolio-title-cover__inner">
+                <strong class="portfolio-title-cover__name">Medisketch</strong>
+                <span class="portfolio-title-cover__desc">메디컬 브랜드 아이덴티티</span>
+              </div>
+            </div>
             <div class="portfolio-card-body">
               <h3>Medisketch</h3>
               <p>Brand Identity / Medical</p>
@@ -91,7 +145,12 @@
           </a>
 
           <a href="./project-suksunggo.html" class="portfolio-card-item">
-            <div class="portfolio-img-box" style="background:#000000;" aria-hidden="true"></div>
+            <div class="portfolio-img-box portfolio-title-cover" style="background:#000000;">
+              <div class="portfolio-title-cover__inner">
+                <strong class="portfolio-title-cover__name">숙성고</strong>
+                <span class="portfolio-title-cover__desc">식음 브랜드의 시각 정체성</span>
+              </div>
+            </div>
             <div class="portfolio-card-body">
               <h3>숙성고</h3>
               <p>Brand Identity / F&B</p>
@@ -99,7 +158,12 @@
           </a>
 
           <a href="./project-hervie.html" class="portfolio-card-item">
-            <div class="portfolio-img-box" style="background:#000000;" aria-hidden="true"></div>
+            <div class="portfolio-img-box portfolio-title-cover" style="background:#000000;">
+              <div class="portfolio-title-cover__inner">
+                <strong class="portfolio-title-cover__name">HERVIE</strong>
+                <span class="portfolio-title-cover__desc">F&B 브랜드 아이덴티티</span>
+              </div>
+            </div>
             <div class="portfolio-card-body">
               <h3>HERVIE</h3>
               <p>Brand Identity / F&amp;B</p>
@@ -107,7 +171,12 @@
           </a>
 
           <a href="./project-nutoon.html" class="portfolio-card-item">
-            <div class="portfolio-img-box" style="background:#000000;" aria-hidden="true"></div>
+            <div class="portfolio-img-box portfolio-title-cover" style="background:#000000;">
+              <div class="portfolio-title-cover__inner">
+                <strong class="portfolio-title-cover__name">NUTOON</strong>
+                <span class="portfolio-title-cover__desc">디지털 플랫폼 브랜드 디자인</span>
+              </div>
+            </div>
             <div class="portfolio-card-body">
               <h3>NUTOON</h3>
               <p>Brand Identity / Platform</p>
@@ -115,7 +184,12 @@
           </a>
 
           <a href="./project-easytask.html" class="portfolio-card-item">
-            <div class="portfolio-img-box" style="background:#000000;" aria-hidden="true"></div>
+            <div class="portfolio-img-box portfolio-title-cover" style="background:#000000;">
+              <div class="portfolio-title-cover__inner">
+                <strong class="portfolio-title-cover__name">EASYTASK</strong>
+                <span class="portfolio-title-cover__desc">서비스 경험과 인터페이스 디자인</span>
+              </div>
+            </div>
             <div class="portfolio-card-body">
               <h3>EASYTASK</h3>
               <p>UX/UI / Service</p>
@@ -123,7 +197,12 @@
           </a>
 
           <a href="./project-guidetalk.html" class="portfolio-card-item">
-            <div class="portfolio-img-box" style="background:#000000;" aria-hidden="true"></div>
+            <div class="portfolio-img-box portfolio-title-cover" style="background:#000000;">
+              <div class="portfolio-title-cover__inner">
+                <strong class="portfolio-title-cover__name">GUIDETALK</strong>
+                <span class="portfolio-title-cover__desc">여행 플랫폼 UX/UI 디자인</span>
+              </div>
+            </div>
             <div class="portfolio-card-body">
               <h3>GUIDETALK</h3>
               <p>UX/UI / Travel Tech</p>
@@ -131,7 +210,12 @@
           </a>
 
           <a href="./project-jangbibug.html" class="portfolio-card-item">
-            <div class="portfolio-img-box" style="background:#000000;" aria-hidden="true"></div>
+            <div class="portfolio-img-box portfolio-title-cover" style="background:#000000;">
+              <div class="portfolio-title-cover__inner">
+                <strong class="portfolio-title-cover__name">JANGBIBUG</strong>
+                <span class="portfolio-title-cover__desc">캐릭터 기반 브랜드 디자인</span>
+              </div>
+            </div>
             <div class="portfolio-card-body">
               <h3>JANGBIBUG</h3>
               <p>Brand Identity / Character</p>
@@ -139,7 +223,12 @@
           </a>
 
           <a href="./project-sagolink.html" class="portfolio-card-item">
-            <div class="portfolio-img-box" style="background:#000000;" aria-hidden="true"></div>
+            <div class="portfolio-img-box portfolio-title-cover" style="background:#000000;">
+              <div class="portfolio-title-cover__inner">
+                <strong class="portfolio-title-cover__name">SAGOLINK</strong>
+                <span class="portfolio-title-cover__desc">플랫폼 브랜드 아이덴티티</span>
+              </div>
+            </div>
             <div class="portfolio-card-body">
               <h3>SAGOLINK</h3>
               <p>Brand Identity / Platform</p>
@@ -147,7 +236,12 @@
           </a>
 
           <a href="./project-vivacel.html" class="portfolio-card-item">
-            <div class="portfolio-img-box" style="background:#000000;" aria-hidden="true"></div>
+            <div class="portfolio-img-box portfolio-title-cover" style="background:#000000;">
+              <div class="portfolio-title-cover__inner">
+                <strong class="portfolio-title-cover__name">CHEONGYANG PEPPER CHUTNEY</strong>
+                <span class="portfolio-title-cover__desc">로컬 푸드 패키지 디자인</span>
+              </div>
+            </div>
             <div class="portfolio-card-body">
               <h3>CHEONGYANG PEPPER CHUTNEY</h3>
               <p>Package / Local Food</p>
@@ -155,7 +249,12 @@
           </a>
 
           <a href="./project-blam.html" class="portfolio-card-item">
-            <div class="portfolio-img-box" style="background:#000000;" aria-hidden="true"></div>
+            <div class="portfolio-img-box portfolio-title-cover" style="background:#000000;">
+              <div class="portfolio-title-cover__inner">
+                <strong class="portfolio-title-cover__name">BLAM</strong>
+                <span class="portfolio-title-cover__desc">라이프스타일 브랜드 디자인</span>
+              </div>
+            </div>
             <div class="portfolio-card-body">
               <h3>BLAM</h3>
               <p>Brand Identity / Lifestyle</p>
@@ -163,7 +262,12 @@
           </a>
 
           <a href="./project-seaf.html" class="portfolio-card-item">
-            <div class="portfolio-img-box" style="background:#000000;" aria-hidden="true"></div>
+            <div class="portfolio-img-box portfolio-title-cover" style="background:#000000;">
+              <div class="portfolio-title-cover__inner">
+                <strong class="portfolio-title-cover__name">SEAF</strong>
+                <span class="portfolio-title-cover__desc">제품 중심 브랜드 아이덴티티</span>
+              </div>
+            </div>
             <div class="portfolio-card-body">
               <h3>SEAF</h3>
               <p>Brand Identity / Product</p>
@@ -171,7 +275,12 @@
           </a>
 
           <a href="./project-golux.html" class="portfolio-card-item">
-            <div class="portfolio-img-box" style="background:#000000;" aria-hidden="true"></div>
+            <div class="portfolio-img-box portfolio-title-cover" style="background:#000000;">
+              <div class="portfolio-title-cover__inner">
+                <strong class="portfolio-title-cover__name">GOLUX</strong>
+                <span class="portfolio-title-cover__desc">프리미엄 브랜드 아이덴티티</span>
+              </div>
+            </div>
             <div class="portfolio-card-body">
               <h3>GOLUX</h3>
               <p>Brand Identity / Premium</p>
@@ -179,7 +288,12 @@
           </a>
 
           <a href="./project-vanzy.html" class="portfolio-card-item">
-            <div class="portfolio-img-box" style="background:#000000;" aria-hidden="true"></div>
+            <div class="portfolio-img-box portfolio-title-cover" style="background:#000000;">
+              <div class="portfolio-title-cover__inner">
+                <strong class="portfolio-title-cover__name">VANZY</strong>
+                <span class="portfolio-title-cover__desc">라이프스타일 브랜드 아이덴티티</span>
+              </div>
+            </div>
             <div class="portfolio-card-body">
               <h3>VANZY</h3>
               <p>Brand Identity / Lifestyle</p>
